@@ -26,4 +26,16 @@ public class Holiday {
     String getDate() {
         return date;
     }
+
+    public String getLocalName() {
+        return localName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
 }

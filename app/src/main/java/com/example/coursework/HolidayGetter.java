@@ -1,5 +1,6 @@
 package com.example.coursework;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -11,11 +12,14 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
 class HolidayGetter {
+
+    List<String> list = Arrays.asList("RU", "AT", "CN", "DE", "IT"); // временная тестовая версия
 
     private byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
@@ -44,24 +48,25 @@ class HolidayGetter {
         return new String(getUrlBytes(urlSpec));
     }
 
-    List<Holiday> fetchItems(String countyCode) {
+    List<Holiday> fetchItems() { // тут надо будет немного паработать над параметрами
         List<Holiday> holidays = new ArrayList<>();
-        try {
-            String url = Uri.parse("https://date.nager.at/api/v2/PublicHolidays/2019/" + countyCode)
-                    .buildUpon()
-                    .appendQueryParameter("format", "json")
-                    .appendQueryParameter("nojsoncallback", "1")
-                    .appendQueryParameter("extras", "url_s")
-                    .build().toString();
-            String jsonString = getUrlString(url);
-            Log.i(TAG, "Received JSON: " + jsonString);
-            JSONArray jsonBody = new JSONArray(jsonString);
-            parseItems(holidays, jsonBody);
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch items", ioe);
-        }
-        catch (JSONException je){
-            Log.e(TAG, "Failed to parse JSON", je);
+        for (int i = 0; i < list.size(); i++) {
+            try {
+                String url = Uri.parse("https://date.nager.at/api/v2/PublicHolidays/2019/" + list.get(i))
+                        .buildUpon()
+                        .appendQueryParameter("format", "json")
+                        .appendQueryParameter("nojsoncallback", "1")
+                        .appendQueryParameter("extras", "url_s")
+                        .build().toString();
+                String jsonString = getUrlString(url);
+                Log.i(TAG, "Received JSON: " + jsonString);
+                JSONArray jsonBody = new JSONArray(jsonString);
+                parseItems(holidays, jsonBody);
+            } catch (IOException ioe) {
+                Log.e(TAG, "Failed to fetch items", ioe);
+            } catch (JSONException je) {
+                Log.e(TAG, "Failed to parse JSON", je);
+            }
         }
         return holidays;
     }
@@ -75,7 +80,7 @@ class HolidayGetter {
             String date = jsonObjectItem.getString("date");
             String localName = jsonObjectItem.getString("localName");
             String name = jsonObjectItem.getString("name");
-            String countryCode = "RU";
+            String countryCode = jsonObjectItem.getString("countryCode");
 
             Holiday holiday = new Holiday(date, localName, name, countryCode);
             items.add(holiday);

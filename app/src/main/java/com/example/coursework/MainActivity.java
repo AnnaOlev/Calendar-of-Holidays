@@ -23,9 +23,10 @@ public class MainActivity extends AppCompatActivity {
             Calendar calendar = eventDay.getCalendar();
             Date date = calendar.getTime();
             String dateString = format.format(date);
+            // дата так подробно для наглядности, возможно потом уберу
             Intent intent = new Intent(this, TodayHolidaysActivity.class);
             intent.putExtra("clickedDate", dateString);
-            startActivity(intent);
+            startActivity(intent); // вызываем активность праздников текущего дня
             //Toast.makeText(getApplicationContext(), dateString, Toast.LENGTH_SHORT).show(); // тупо тест жмакалки
         });
     }
