@@ -3,6 +3,8 @@ package com.example.coursework;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.applandeo.materialcalendarview.CalendarView;
 
@@ -28,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("clickedDate", dateString);
             startActivity(intent); // вызываем активность праздников текущего дня
             //Toast.makeText(getApplicationContext(), dateString, Toast.LENGTH_SHORT).show(); // тупо тест жмакалки
+        });
+
+        Button button = findViewById(R.id.toSettings);
+        button.setOnClickListener(view -> {
+            Intent intent1 = new Intent(getBaseContext(), CountryChoiceActivity.class);
+            startActivity(intent1);
         });
     }
 }

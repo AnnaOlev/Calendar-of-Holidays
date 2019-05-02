@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TodayHolidaysActivity" />
+        <activity android:name=".CountryChoiceActivity" />
     </application>
 
 </manifest>

@@ -2,7 +2,6 @@ package com.example.coursework;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +38,10 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         DividerItemDecoration itemDecor = new DividerItemDecoration(getBaseContext(), DividerItemDecoration.HORIZONTAL);
         mRecyclerView.addItemDecoration(itemDecor); // добавление разделителя
 
-        if (!holidaysDatabase.getData(date)) {
+        if (!holidaysDatabase.getDataByDate(date)) { // замени на проверку по стране или как-то еще
             new GetHolidaysTask().execute(); // вызов асинка для подгрузки праздников
         } else {
-            mHolidays = holidaysDatabase.getAllHolidays();
+            mHolidays = holidaysDatabase.getAllHolidays(); // если уже есть - вытаскиваем из бд
             mRecyclerView.setAdapter(new HolidayAdapter(mHolidays, getBaseContext()));
         }
     }
@@ -74,7 +73,7 @@ public class TodayHolidaysActivity extends AppCompatActivity {
 
         HolidayAdapter(List<Holiday> holidays, Context context) {
             for (int i = 0; i < holidays.size(); i++){
-                if (holidays.get(i).getDate().equals(date)){
+                if (holidays.get(i).getDate().equals(date)){ // добавляем если соответствует дата
                     Holiday holiday = holidays.get(i);
                     mListHolidays.add(holiday);
                     Log.i(TAG, "This holiday was added: " + holidays.get(i).toString()); // лень по точкам, вот вам лог
@@ -115,11 +114,10 @@ public class TodayHolidaysActivity extends AppCompatActivity {
             mHolidays.addAll(holidays); // наверное потом надо сделать тут бд? или не тут
             for (int i = 0; i < mHolidays.size(); i++) {
                 Holiday holiday = mHolidays.get(i);
-                holidaysDatabase.insertHoliday(holiday.getDate(), holiday.getName(), holiday.getLocalName(), holiday.getCountryCode());
+                holidaysDatabase.insertHoliday(holiday.getDate(), holiday.getName(),
+                            holiday.getLocalName(), holiday.getCountryCode());
             }
             mRecyclerView.setAdapter(new HolidayAdapter(mHolidays, getBaseContext()));
         }
     }
 }
-
-

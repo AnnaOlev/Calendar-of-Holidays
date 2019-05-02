@@ -75,10 +75,23 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
         return array_list;
     }
 
-    boolean getData(String date) {
+    boolean getDataByDate(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor row = null;
+        Cursor row;
         String query = "SELECT * FROM holidays_table" + " WHERE date"+" like '%"+date+"%'";
+        row = db.rawQuery(query, null);
+        Log.i(TAG, "I was here");
+        if (row.getCount() > 0) {
+            return true;
+        }
+        row.close();
+        return false;
+    }
+
+    boolean getDataByCountry(String country) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor row;
+        String query = "SELECT * FROM holidays_table" + " WHERE country"+" like '%"+country+"%'";
         row = db.rawQuery(query, null);
         Log.i(TAG, "I was here");
         if (row.getCount() > 0) {

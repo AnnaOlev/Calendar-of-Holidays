@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CourseWork</string>
     <string name="events">Today\'s events:</string>
+    <string name="settings">To country list</string>
 </resources>
