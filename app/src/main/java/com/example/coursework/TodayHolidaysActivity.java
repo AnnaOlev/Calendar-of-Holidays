@@ -22,9 +22,13 @@ import static android.content.ContentValues.TAG;
 public class TodayHolidaysActivity extends AppCompatActivity {
 
     ArrayList<Holiday> mHolidays = new ArrayList<>(); // основной массив праздников
+    ArrayList<Country> mCountries = new ArrayList<>();
+    //ArrayList<Country> newCountries = new ArrayList<>();
     String date; // текущая дата
+    //boolean check = false;
     RecyclerView mRecyclerView;
     HolidaysDatabase holidaysDatabase = new HolidaysDatabase(this);
+    CountriesDatabase countriesDatabase = new CountriesDatabase(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -38,12 +42,26 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         DividerItemDecoration itemDecor = new DividerItemDecoration(getBaseContext(), DividerItemDecoration.HORIZONTAL);
         mRecyclerView.addItemDecoration(itemDecor); // добавление разделителя
 
-        if (!holidaysDatabase.getDataByDate(date)) { // замени на проверку по стране или как-то еще
-            new GetHolidaysTask().execute(); // вызов асинка для подгрузки праздников
-        } else {
-            mHolidays = holidaysDatabase.getAllHolidays(); // если уже есть - вытаскиваем из бд
-            mRecyclerView.setAdapter(new HolidayAdapter(mHolidays, getBaseContext()));
-        }
+        mCountries = countriesDatabase.getAllCountries();
+        mHolidays = holidaysDatabase.getAllHolidays();
+
+        //if (holidaysDatabase.getData() == 0)
+            new GetHolidaysTask().execute();
+        /*else {
+            for (int i = 0; i < mCountries.size(); i++){
+                if (!holidaysDatabase.getDataByCountry(mCountries.get(i).getCode()) && mCountries.get(i).getIfAdded().equals("yes")){
+                    newCountries.add(mCountries.get(i));
+                    check = true;
+                    Log.i(TAG, "New country is here");
+                }
+            }
+
+            if (newCountries.size()!= 0)
+                new GetHolidaysTask().execute();
+            else {
+                mRecyclerView.setAdapter(new HolidayAdapter(mHolidays, this));
+            }
+        }*/
     }
 
     private class HolidayHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -105,14 +123,17 @@ public class TodayHolidaysActivity extends AppCompatActivity {
     private class GetHolidaysTask extends AsyncTask<Void,Void,List<Holiday>> {
         @Override
         protected List<Holiday> doInBackground(Void... params) {
-
-            return new HolidayGetter().fetchItems();
+            /*if (check){
+                return new HolidayGetter().fetchItems(newCountries);
+            } else*/
+            return new HolidayGetter().fetchItems(mCountries);
         }
 
         @Override
         protected void onPostExecute(List<Holiday> holidays) {
-            mHolidays.addAll(holidays); // наверное потом надо сделать тут бд? или не тут
-            for (int i = 0; i < mHolidays.size(); i++) {
+            //newCountries.clear();
+            mHolidays.addAll(holidays);
+            for (int i = 0; i < holidays.size(); i++) {
                 Holiday holiday = mHolidays.get(i);
                 holidaysDatabase.insertHoliday(holiday.getDate(), holiday.getName(),
                             holiday.getLocalName(), holiday.getCountryCode());

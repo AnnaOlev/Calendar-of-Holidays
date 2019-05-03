@@ -1,7 +1,9 @@
 package com.example.coursework;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -48,45 +50,24 @@ public class CountryChoiceActivity extends AppCompatActivity {
         }
     }
 
-    private class CountryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        private TextView mInfoTextView;
-
-        CountryHolder(View view) {
-            super(view);
-
-            itemView.setOnClickListener(this);
-            mInfoTextView = view.findViewById(R.id.infoText);
-        }
-
-        void bindListItem(Country country) {
-            mInfoTextView.setText(country.getName());
-        }
-
-        @Override
-        public void onClick (View view){
-            // если успею, тут будет вызов поиска инфы о празднике из википедии
-        }
-    }
-
-    private class CountryAdapter extends RecyclerView.Adapter<CountryChoiceActivity.CountryHolder> {
-        private ArrayList<Country> mListCountries = new ArrayList<>(); // тоже список праздников, но для адаптера
+    private class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryHolder> {
+        private ArrayList<Country> mListCountries = new ArrayList<>();
         private Context context;
+
 
         CountryAdapter(List<Country> countries, Context context) {
             mListCountries.addAll(countries);
-            // в этот массив сунули только нужные праздники
             this.context = context;
         }
 
         @Override
-        public CountryChoiceActivity.CountryHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_of_list, viewGroup, false );
-            return new CountryChoiceActivity.CountryHolder(view);
+        public CountryHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_of_list_check, viewGroup, false );
+            return new CountryHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(CountryChoiceActivity.CountryHolder itemHolder, int position) {
+        public void onBindViewHolder(CountryHolder itemHolder, int position) {
             Country country = mListCountries.get(position);
             itemHolder.bindListItem(country);
         }
@@ -94,6 +75,48 @@ public class CountryChoiceActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mListCountries == null ? 0 : mListCountries.size();
+        }
+
+        private class CountryHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+            private TextView mInfoTextView;
+            CheckBox mCheckBox;
+
+            CountryHolder(View view) {
+                super(view);
+
+                itemView.setOnClickListener(this);
+                mInfoTextView = view.findViewById(R.id.infoTextCountry);
+                mCheckBox = view.findViewById(R.id.checkBox);
+                view.setOnClickListener(this);
+
+                //checkbox click event handling
+                mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked) {
+                        SQLiteDatabase db = countriesDatabase.getWritableDatabase();
+                        mListCountries.get(getAdapterPosition()).setIfAdded("yes");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("name", mListCountries.get(getAdapterPosition()).getName());
+                        contentValues.put("code", mListCountries.get(getAdapterPosition()).getCode());
+                        contentValues.put("added", "yes");
+                        db.update("countries_table", contentValues, "id = ?", new String[]
+                                {mListCountries.get(getAdapterPosition()).getId()});
+                    }
+                });
+            }
+
+            void bindListItem(Country country) {
+                mInfoTextView.setText(country.getName());
+                if (country.getIfAdded().equals("yes")) {
+                    mCheckBox.setChecked(true);
+                } else {
+                    mCheckBox.setChecked(false);
+                }
+            }
+
+            @Override
+            public void onClick (View view){
+            }
         }
     }
 
@@ -152,5 +175,4 @@ public class CountryChoiceActivity extends AppCompatActivity {
             mRecyclerView.setAdapter(new CountryAdapter(mCountries, getBaseContext()));
         }
     }
-
 }

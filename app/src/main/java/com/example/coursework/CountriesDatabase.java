@@ -63,8 +63,9 @@ public class CountriesDatabase extends SQLiteOpenHelper {
                 String name = res.getString(res.getColumnIndex(COUNTRY_NAME_COLUMN));
                 String code = res.getString(res.getColumnIndex(COUNTRY_CODE_COLUMN));
                 String added = res.getString(res.getColumnIndex(IF_ADDED_COLUMN));
+                String id = res.getString(res.getColumnIndex(ID_COLUMN));
 
-                Country country = new Country(name, code, added);
+                Country country = new Country(name, code, added, id);
                 array_list.add(country);
                 Log.i(TAG, "Country was added to the array" + name);
 

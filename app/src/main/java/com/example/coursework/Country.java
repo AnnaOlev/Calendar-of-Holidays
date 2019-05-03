@@ -5,11 +5,13 @@ public class Country {
     private String name;
     private String code;
     private String ifAdded;
+    private String id;
 
-    public Country(String name, String code, String ifAdded) {
+    public Country(String name, String code, String ifAdded, String id) {
         this.name = name;
         this.code = code;
         this.ifAdded = ifAdded;
+        this.id = id;
     }
 
     public String getName() {
@@ -20,11 +22,16 @@ public class Country {
         return code;
     }
 
+
     public String getIfAdded() {
         return ifAdded;
     }
 
     public void setIfAdded(String ifAdded) {
         this.ifAdded = ifAdded;
+    }
+
+    public String getId() {
+        return id;
     }
 }
