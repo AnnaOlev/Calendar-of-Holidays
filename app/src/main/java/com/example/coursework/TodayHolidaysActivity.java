@@ -27,6 +27,7 @@ public class TodayHolidaysActivity extends AppCompatActivity {
     String date; // текущая дата
     //boolean check = false;
     RecyclerView mRecyclerView;
+    Context context;
     HolidaysDatabase holidaysDatabase = new HolidaysDatabase(this);
     CountriesDatabase countriesDatabase = new CountriesDatabase(this);
 
@@ -36,6 +37,7 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         setContentView(R.layout.activity_today_holidays);
 
         date = getIntent().getStringExtra("clickedDate");
+        context = this;
 
         mRecyclerView = findViewById(R.id.holiday_recycler);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
@@ -126,15 +128,16 @@ public class TodayHolidaysActivity extends AppCompatActivity {
             /*if (check){
                 return new HolidayGetter().fetchItems(newCountries);
             } else*/
-            return new HolidayGetter().fetchItems(mCountries);
+            return new HolidayGetter().fetchItems(mCountries, context);
         }
 
         @Override
         protected void onPostExecute(List<Holiday> holidays) {
-            //newCountries.clear();
+
             mHolidays.addAll(holidays);
+
             for (int i = 0; i < holidays.size(); i++) {
-                Holiday holiday = mHolidays.get(i);
+                Holiday holiday = holidays.get(i);
                 holidaysDatabase.insertHoliday(holiday.getDate(), holiday.getName(),
                             holiday.getLocalName(), holiday.getCountryCode());
             }

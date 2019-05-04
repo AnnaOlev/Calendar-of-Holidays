@@ -82,11 +82,7 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
         String query = "SELECT * FROM holidays_table" + " WHERE country"+" like '%"+country+"%'";
         row = db.rawQuery(query, null);
         Log.i(TAG, "I was here");
-        if (row.getCount() > 0) {
-            return true;
-        }
-        row.close();
-        return false;
+        return row.getCount() > 0;
     }
 
     int getData() {
