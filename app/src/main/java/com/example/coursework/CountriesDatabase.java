@@ -85,5 +85,12 @@ public class CountriesDatabase extends SQLiteOpenHelper {
             row.close();
             return counter;
         }
-        // по идее этот класс нужен для проверки того, есть ли элементы с текущей датой в бд, но я хз то ли это что надо
+
+        boolean getDataByCode(String code) {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor row;
+            String query = "SELECT * FROM countries_table" + " WHERE code"+" like '%"+code+"%' AND added" + " like '%" + "yes" + "%'";
+            row = db.rawQuery(query, null);
+            return row.getCount() > 0;
+        }
 }

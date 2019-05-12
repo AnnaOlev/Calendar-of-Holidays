@@ -12,4 +12,8 @@ public class CustomEventDay extends EventDay {
         super(day, imageResource);
         eventInfo = note;
     }
+
+    public String getEventInfo() {
+        return eventInfo;
+    }
 }

@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,9 +39,9 @@ public class CountryChoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_country_choice);
 
-
         mRecyclerView = findViewById(R.id.countryRecycler);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext(), DividerItemDecoration.VERTICAL));
 
         if (countriesDatabase.getData() == 0){
             new GetCountriesTask().execute();
@@ -92,13 +94,22 @@ public class CountryChoiceActivity extends AppCompatActivity {
 
                 //checkbox click event handling
                 mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    SQLiteDatabase db = countriesDatabase.getWritableDatabase();
                     if (isChecked) {
-                        SQLiteDatabase db = countriesDatabase.getWritableDatabase();
                         mListCountries.get(getAdapterPosition()).setIfAdded("yes");
                         ContentValues contentValues = new ContentValues();
                         contentValues.put("name", mListCountries.get(getAdapterPosition()).getName());
                         contentValues.put("code", mListCountries.get(getAdapterPosition()).getCode());
                         contentValues.put("added", "yes");
+                        db.update("countries_table", contentValues, "id = ?", new String[]
+                                {mListCountries.get(getAdapterPosition()).getId()});
+                    }
+                    else {
+                        mListCountries.get(getAdapterPosition()).setIfAdded("no");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("name", mListCountries.get(getAdapterPosition()).getName());
+                        contentValues.put("code", mListCountries.get(getAdapterPosition()).getCode());
+                        contentValues.put("added", mListCountries.get(getAdapterPosition()).getIfAdded());
                         db.update("countries_table", contentValues, "id = ?", new String[]
                                 {mListCountries.get(getAdapterPosition()).getId()});
                     }

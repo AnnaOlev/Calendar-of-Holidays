@@ -20,10 +20,10 @@ public class ChosenDayDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         assert getArguments() != null;
         String getArgument = getArguments().getString("CURRENT_DAY_DATA");
-        //assert getArguments() != null;
+        String info = getArguments().getString("EVENT_INFO");
         //String getArgument = getArguments().getString("CURRENT_DAY_DATA");
-        builder.setTitle("Adding an event to favourites")
-                //.setMessage("Event: " + getArgument)
+        builder.setTitle("Your events for today:")
+                .setMessage(info)
                 .setPositiveButton("To events list", (dialog, id) -> {
                     Intent intent = new Intent(getContext(), TodayHolidaysActivity.class);
                     intent.putExtra("clickedDate", getArgument);

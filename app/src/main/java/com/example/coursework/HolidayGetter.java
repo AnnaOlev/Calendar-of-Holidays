@@ -12,7 +12,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -51,7 +50,7 @@ class HolidayGetter {
         HolidaysDatabase holidaysDatabase = new HolidaysDatabase(context);
 
         for (int i = 0; i < countries.size(); i++) {
-            if (countries.get(i).getIfAdded().equals("yes") && !holidaysDatabase.getDataByCountry(countries.get(i).getCode()))
+            if (countries.get(i).getIfAdded().equals("yes") && !holidaysDatabase.getDataByCountry(countries.get(i).getCode())){
                 try {
                     String url = Uri.parse("https://date.nager.at/api/v2/PublicHolidays/2019/" + countries.get(i).getCode())
                             .buildUpon()
@@ -68,6 +67,11 @@ class HolidayGetter {
                 } catch (JSONException je) {
                     Log.e(TAG, "Failed to parse JSON", je);
                 }
+            }
+            else if (countries.get(i).getIfAdded().equals("no") && holidaysDatabase.getDataByCountry(countries.get(i).getCode())){
+                Log.e(TAG, "DELETE DELETE DELETE (getter)");
+                holidaysDatabase.deleteEntry(countries.get(i).getCode());
+            }
         }
         return holidays;
     }
@@ -83,7 +87,7 @@ class HolidayGetter {
             String name = jsonObjectItem.getString("name");
             String countryCode = jsonObjectItem.getString("countryCode");
 
-            Holiday holiday = new Holiday(date, localName, name, countryCode);
+            Holiday holiday = new Holiday(date, localName, name, countryCode, "no");
             items.add(holiday);
         }
     }
