@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CourseWork</string>
+    <string name="app_name">Calendar of Holidays</string>
     <string name="events">Today\'s events:</string>
     <string name="settings">To country list</string>
     <string name="Confirm">Confirm</string> />

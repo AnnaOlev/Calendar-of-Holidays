@@ -2,7 +2,6 @@ package com.example.coursework;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,11 +16,11 @@ import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements ChosenDayDialog.OnCompleteListener{
 
-    private final static int REQUEST_CODE = 1;
+    private final static int REQUEST_CODE = 2;
     List<EventDay> events = new ArrayList<>();
     List<Holiday> holidays = new ArrayList<>();
     HolidaysDatabase holidaysDatabase = new HolidaysDatabase(this);
-    CountriesDatabase countriesDatabase = new CountriesDatabase(this);
+    //CountriesDatabase countriesDatabase = new CountriesDatabase(this);
     Calendar calendar;
     CalendarView mCalendarView;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -31,28 +30,11 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        /*holidays = holidaysDatabase.getAllHolidays();
-        for (int i = 0; i < holidays.size(); i++){
-            Date date = null;
-            Holiday holiday = holidays.get(i);
-            if (holiday.getFavourite().equals("yes") && countriesDatabase.getDataByCode(holiday.getCountryCode())){
-                try {
-                    date = format.parse(holidays.get(i).getDate());
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    CustomEventDay customEventDay = new CustomEventDay(calendar, R.drawable.ic_action_name, holiday.toString());
-                    events.add(customEventDay);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
-
         mCalendarView = findViewById(R.id.calendarView);
 
-        /*if (!events.isEmpty())
-            mCalendarView.setEvents(events);*/
+        getFavs();
+        if (!events.isEmpty())
+            mCalendarView.setEvents(events);
 
         mCalendarView.setOnDayClickListener(eventDay -> {
 
@@ -64,14 +46,14 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
             chosenDayDialog.show(getSupportFragmentManager(), "dialog");
             Bundle bundle = new Bundle();
             bundle.putString("CURRENT_DAY_DATA", dateString);
-            String todayInfoString = "";
+            StringBuilder todayInfoString = new StringBuilder();
             for (int i = 0; i < events.size(); i++){
                 if (events.get(i).getCalendar() == calendar) {
                     CustomEventDay customEventDay = (CustomEventDay) events.get(i);
-                    todayInfoString += customEventDay.getEventInfo() + " ";
+                    todayInfoString.append(customEventDay.getEventInfo()).append(" ");
                 }
             }
-            bundle.putString("EVENT_INFO", todayInfoString);
+            bundle.putString("EVENT_INFO", todayInfoString.toString());
             chosenDayDialog.setArguments(bundle);
         });
 
@@ -88,12 +70,10 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
 
         // The returned result data is identified by requestCode.
         // The request code is specified in startActivityForResult(intent, REQUEST_CODE_1); method.
-        switch (requestCode)
-        {
+        switch (requestCode) {
             // This request code is set by startActivityForResult(intent, REQUEST_CODE_1) method.
             case REQUEST_CODE:
-                if(resultCode == RESULT_OK)
-                {
+                if (resultCode == RESULT_OK) {
                     String messageReturn = dataIntent.getStringExtra("message_return");
                     CustomEventDay eventDay = new CustomEventDay(calendar, R.drawable.ic_action_name, messageReturn);
                     events.add(eventDay);
@@ -104,5 +84,32 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
 
     public void onComplete (Intent intent){
         startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        Intent refresh = new Intent(this, MainActivity.class);
+        startActivity(refresh);
+        this.finish();
+    }
+
+    void getFavs(){
+        holidays = holidaysDatabase.getAllHolidays();
+        for (int i = 0; i < holidays.size(); i++){
+            Date date = null;
+            Holiday holiday = holidays.get(i);
+            if (holiday.getFavourite().equals("yes")){
+                try {
+                    date = format.parse(holidays.get(i).getDate());
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    CustomEventDay customEventDay = new CustomEventDay(calendar, R.drawable.ic_action_name, holiday.toString());
+                    events.add(customEventDay);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

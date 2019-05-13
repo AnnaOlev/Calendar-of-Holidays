@@ -68,10 +68,6 @@ class HolidayGetter {
                     Log.e(TAG, "Failed to parse JSON", je);
                 }
             }
-            else if (countries.get(i).getIfAdded().equals("no") && holidaysDatabase.getDataByCountry(countries.get(i).getCode())){
-                Log.e(TAG, "DELETE DELETE DELETE (getter)");
-                holidaysDatabase.deleteEntry(countries.get(i).getCode());
-            }
         }
         return holidays;
     }

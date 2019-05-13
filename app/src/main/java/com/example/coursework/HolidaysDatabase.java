@@ -86,12 +86,12 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
         return row.getCount() > 0;
     }
 
-    void deleteEntry(String country)
-    {
+    void deleteEntry(String country) {
         SQLiteDatabase db = this.getWritableDatabase();
         String where="country=?";
-        db.delete(TABLE_NAME, where, new String[]{country});
-        Log.e(TAG, "DELETE DELETE DELETE");
+        int numberOFEntriesDeleted = db.delete(TABLE_NAME, where, new String[]{country});
+
+        Log.e(TAG, "DELETE DELETE DELETE " + numberOFEntriesDeleted);
     }
 
     int getData() {

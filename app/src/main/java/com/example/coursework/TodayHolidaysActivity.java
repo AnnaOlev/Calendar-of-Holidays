@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,11 +50,8 @@ public class TodayHolidaysActivity extends AppCompatActivity {
 
         mCountries = countriesDatabase.getAllCountries();
 
-        //if (holidaysDatabase.getData() == 0)
-            new GetHolidaysTask().execute();
+        new GetHolidaysTask().execute();
     }
-
-
 
     private class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.HolidayHolder> {
         private ArrayList<Holiday> mListHolidays = new ArrayList<>(); // тоже список праздников, но для адаптера
@@ -72,7 +71,7 @@ public class TodayHolidaysActivity extends AppCompatActivity {
 
         @Override
         public HolidayHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_of_list, viewGroup, false );
+            View view = LayoutInflater.from(context).inflate(R.layout.item_of_list_check, viewGroup, false );
             return new HolidayHolder(view);
         }
 
@@ -90,39 +89,62 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         private class HolidayHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
             private TextView mInfoTextView;
+            private CheckBox mFavBox;
 
             HolidayHolder(View view) {
                 super(view);
 
                 itemView.setOnClickListener(this);
-                mInfoTextView = view.findViewById(R.id.infoText);
+                mInfoTextView = view.findViewById(R.id.infoTextCountry);
+                mFavBox = view.findViewById(R.id.checkBox);
+
+                mFavBox.setOnCheckedChangeListener((compoundButton, b) -> {
+                    if (b){
+                        mListHolidays.get(getAdapterPosition()).setFavourite("yes");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("date", mListHolidays.get(getAdapterPosition()).getDate());
+                        contentValues.put("name", mListHolidays.get(getAdapterPosition()).getName());
+                        contentValues.put("local_name", mListHolidays.get(getAdapterPosition()).getLocalName());
+                        contentValues.put("country", mListHolidays.get(getAdapterPosition()).getCountryCode());
+                        contentValues.put("fav", mListHolidays.get(getAdapterPosition()).getFavourite());
+                        SQLiteDatabase db = holidaysDatabase.getWritableDatabase();
+                        db.update("holidays_table", contentValues, "local_name=?",
+                                new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
+                    }
+                    else {
+                        mListHolidays.get(getAdapterPosition()).setFavourite("no");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("date", mListHolidays.get(getAdapterPosition()).getDate());
+                        contentValues.put("name", mListHolidays.get(getAdapterPosition()).getName());
+                        contentValues.put("local_name", mListHolidays.get(getAdapterPosition()).getLocalName());
+                        contentValues.put("country", mListHolidays.get(getAdapterPosition()).getCountryCode());
+                        contentValues.put("fav", mListHolidays.get(getAdapterPosition()).getFavourite());
+                        SQLiteDatabase db = holidaysDatabase.getWritableDatabase();
+                        db.update("holidays_table", contentValues, "local_name=?",
+                                new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
+                    }
+                });
             }
 
             void bindListItem(Holiday holiday) {
                 mInfoTextView.setText(holiday.toString());
+                if (holiday.getFavourite().equals("yes")) {
+                    mFavBox.setChecked(true);
+                } else {
+                    mFavBox.setChecked(false);
+                }
             }
 
             @Override
             public void onClick (View view){
-                Bundle bundle = new Bundle();
+                /*Bundle bundle = new Bundle();
                 EventToFavDialog eventToFavDialog = new EventToFavDialog();
                 bundle.putString("EVENT_DATA", mInfoTextView.getText().toString());
                 eventToFavDialog.setArguments(bundle);
                 eventToFavDialog.show(getSupportFragmentManager(), "dialog");
                 Intent intent = new Intent();
                 intent.putExtra("message_return", mInfoTextView.getText().toString());
-                setResult(RESULT_OK, intent);
-
-                mListHolidays.get(getAdapterPosition()).setFavourite("yes");
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("date", mListHolidays.get(getAdapterPosition()).getDate());
-                contentValues.put("name", mListHolidays.get(getAdapterPosition()).getName());
-                contentValues.put("local_name", mListHolidays.get(getAdapterPosition()).getLocalName());
-                contentValues.put("country", mListHolidays.get(getAdapterPosition()).getCountryCode());
-                contentValues.put("fav", mListHolidays.get(getAdapterPosition()).getFavourite());
-                SQLiteDatabase db = holidaysDatabase.getWritableDatabase();
-                db.update("holidays_table", contentValues, "local_name=?",
-                        new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
+                setResult(RESULT_OK, intent);*/
 
             }
         }

@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,6 +30,7 @@ import static android.content.ContentValues.TAG;
 public class CountryChoiceActivity extends AppCompatActivity {
 
     CountriesDatabase countriesDatabase = new CountriesDatabase(this);
+    HolidaysDatabase holidaysDatabase = new HolidaysDatabase(this);
     RecyclerView mRecyclerView;
     ArrayList<Country> mCountries = new ArrayList<>();
 
@@ -112,6 +112,7 @@ public class CountryChoiceActivity extends AppCompatActivity {
                         contentValues.put("added", mListCountries.get(getAdapterPosition()).getIfAdded());
                         db.update("countries_table", contentValues, "id = ?", new String[]
                                 {mListCountries.get(getAdapterPosition()).getId()});
+                        holidaysDatabase.deleteEntry(mListCountries.get(getAdapterPosition()).getCode());
                     }
                 });
             }
