@@ -3,7 +3,6 @@ package com.example.coursework;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,10 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -137,14 +136,6 @@ public class TodayHolidaysActivity extends AppCompatActivity {
 
             @Override
             public void onClick (View view){
-                /*Bundle bundle = new Bundle();
-                EventToFavDialog eventToFavDialog = new EventToFavDialog();
-                bundle.putString("EVENT_DATA", mInfoTextView.getText().toString());
-                eventToFavDialog.setArguments(bundle);
-                eventToFavDialog.show(getSupportFragmentManager(), "dialog");
-                Intent intent = new Intent();
-                intent.putExtra("message_return", mInfoTextView.getText().toString());
-                setResult(RESULT_OK, intent);*/
 
             }
         }
@@ -155,7 +146,8 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         @Override
         protected List<Holiday> doInBackground(Void... params) {
 
-            return new HolidayGetter().fetchItems(mCountries, context);
+            String year = date.substring(0,4);
+            return new HolidayGetter().fetchItems(mCountries, context, year);
         }
 
         @Override

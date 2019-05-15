@@ -2,5 +2,9 @@
     <string name="app_name">Calendar of Holidays</string>
     <string name="events">Today\'s events:</string>
     <string name="settings">To country list</string>
-    <string name="Confirm">Confirm</string> />
+    <string name="Confirm">Confirm</string>
+    <string name="Add">Enter new holiday\'s data</string>
+    <string name="Name">Enter holiday\'s name</string>
+    <string name="Date">Enter holiday\'s date</string>
+    />
 </resources>

@@ -4,7 +4,7 @@ import com.applandeo.materialcalendarview.EventDay;
 
 import java.util.Calendar;
 
-public class CustomEventDay extends EventDay {
+class CustomEventDay extends EventDay {
 
     private String eventInfo;
 
@@ -13,7 +13,7 @@ public class CustomEventDay extends EventDay {
         eventInfo = note;
     }
 
-    public String getEventInfo() {
+    String getEventInfo() {
         return eventInfo;
     }
 }

@@ -45,14 +45,14 @@ class HolidayGetter {
         return new String(getUrlBytes(urlSpec));
     }
 
-    List<Holiday> fetchItems(List<Country> countries, Context context) { // тут надо будет немного паработать над параметрами
+    List<Holiday> fetchItems(List<Country> countries, Context context, String year) { // тут надо будет немного паработать над параметрами
         List<Holiday> holidays = new ArrayList<>();
         HolidaysDatabase holidaysDatabase = new HolidaysDatabase(context);
 
         for (int i = 0; i < countries.size(); i++) {
             if (countries.get(i).getIfAdded().equals("yes") && !holidaysDatabase.getDataByCountry(countries.get(i).getCode())){
                 try {
-                    String url = Uri.parse("https://date.nager.at/api/v2/PublicHolidays/2019/" + countries.get(i).getCode())
+                    String url = Uri.parse("https://date.nager.at/api/v2/PublicHolidays/" + year +"/" + countries.get(i).getCode())
                             .buildUpon()
                             .appendQueryParameter("format", "json")
                             .appendQueryParameter("nojsoncallback", "1")

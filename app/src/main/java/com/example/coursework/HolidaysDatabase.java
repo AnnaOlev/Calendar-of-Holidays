@@ -50,6 +50,7 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
         contentValues.put("country", country);
         contentValues.put("fav", fav);
         db.insert("holidays_table", null, contentValues);
+        Log.e(TAG, "It was added " + name);
         return true;
     }
 
