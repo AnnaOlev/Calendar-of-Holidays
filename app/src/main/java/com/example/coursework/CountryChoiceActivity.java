@@ -92,7 +92,6 @@ public class CountryChoiceActivity extends AppCompatActivity {
                 mCheckBox = view.findViewById(R.id.checkBox);
                 view.setOnClickListener(this);
 
-                //checkbox click event handling
                 mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     SQLiteDatabase db = countriesDatabase.getWritableDatabase();
                     if (isChecked) {

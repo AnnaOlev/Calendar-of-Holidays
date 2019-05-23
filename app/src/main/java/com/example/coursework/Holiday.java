@@ -16,15 +16,6 @@ public class Holiday {
         this.favourite = favourite;
     }
 
-    /*@Override
-    public String toString() {
-        return "This holiday is celebrated on " +
-                "date '" + date + '\'' +
-                ", it's local name is '" + localName + '\'' +
-                ", it's english name is '" + name + '\'' +
-                ", it's holiday of '" + countryCode + '\'';
-    }*/
-
     @Override
     public String toString() {
         return localName +
@@ -36,7 +27,7 @@ public class Holiday {
         return date;
     }
 
-    public String getLocalName() {
+    String getLocalName() {
         return localName;
     }
 
@@ -44,15 +35,15 @@ public class Holiday {
         return name;
     }
 
-    public String getCountryCode() {
+    String getCountryCode() {
         return countryCode;
     }
 
-    public String getFavourite() {
+    String getFavourite() {
         return favourite;
     }
 
-    public void setFavourite(String favourite) {
+    void setFavourite(String favourite) {
         this.favourite = favourite;
     }
 }

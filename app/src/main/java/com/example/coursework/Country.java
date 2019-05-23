@@ -7,7 +7,7 @@ public class Country {
     private String ifAdded;
     private String id;
 
-    public Country(String name, String code, String ifAdded, String id) {
+    Country(String name, String code, String ifAdded, String id) {
         this.name = name;
         this.code = code;
         this.ifAdded = ifAdded;
@@ -18,16 +18,16 @@ public class Country {
         return name;
     }
 
-    public String getCode() {
+    String getCode() {
         return code;
     }
 
 
-    public String getIfAdded() {
+    String getIfAdded() {
         return ifAdded;
     }
 
-    public void setIfAdded(String ifAdded) {
+    void setIfAdded(String ifAdded) {
         this.ifAdded = ifAdded;
     }
 

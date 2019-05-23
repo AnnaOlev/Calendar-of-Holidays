@@ -40,7 +40,7 @@ public class CountriesDatabase extends SQLiteOpenHelper {
             onCreate(db);
         }
 
-        boolean insertCountry(String name, String code, String added) {
+        void insertCountry(String name, String code, String added) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("name", name);
@@ -48,7 +48,6 @@ public class CountriesDatabase extends SQLiteOpenHelper {
             contentValues.put("added", added);
             db.insert("countries_table", null, contentValues);
             Log.i(TAG, "Country was added to the database" + name);
-            return true;
         }
 
         ArrayList<Country> getAllCountries() {
@@ -84,13 +83,5 @@ public class CountriesDatabase extends SQLiteOpenHelper {
             int counter = row.getInt(0);
             row.close();
             return counter;
-        }
-
-        boolean getDataByCode(String code) {
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor row;
-            String query = "SELECT * FROM countries_table" + " WHERE code"+" like '%"+code+"%' AND added" + " like '%" + "yes" + "%'";
-            row = db.rawQuery(query, null);
-            return row.getCount() > 0;
         }
 }

@@ -43,7 +43,6 @@ public class TodayHolidaysActivity extends AppCompatActivity {
         context = this;
 
         mRecyclerView = findViewById(R.id.holiday_recycler);
-        //mRecyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext(), DividerItemDecoration.VERTICAL));
 
@@ -111,16 +110,20 @@ public class TodayHolidaysActivity extends AppCompatActivity {
                                 new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
                     }
                     else {
-                        mListHolidays.get(getAdapterPosition()).setFavourite("no");
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("date", mListHolidays.get(getAdapterPosition()).getDate());
-                        contentValues.put("name", mListHolidays.get(getAdapterPosition()).getName());
-                        contentValues.put("local_name", mListHolidays.get(getAdapterPosition()).getLocalName());
-                        contentValues.put("country", mListHolidays.get(getAdapterPosition()).getCountryCode());
-                        contentValues.put("fav", mListHolidays.get(getAdapterPosition()).getFavourite());
-                        SQLiteDatabase db = holidaysDatabase.getWritableDatabase();
-                        db.update("holidays_table", contentValues, "local_name=?",
-                                new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
+                        if (mListHolidays.get(getAdapterPosition()).getCountryCode().equals("your family, we guess?)"))
+                            holidaysDatabase.deleteEntryName(mListHolidays.get(getAdapterPosition()).getName());
+                        else {
+                            mListHolidays.get(getAdapterPosition()).setFavourite("no");
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("date", mListHolidays.get(getAdapterPosition()).getDate());
+                            contentValues.put("name", mListHolidays.get(getAdapterPosition()).getName());
+                            contentValues.put("local_name", mListHolidays.get(getAdapterPosition()).getLocalName());
+                            contentValues.put("country", mListHolidays.get(getAdapterPosition()).getCountryCode());
+                            contentValues.put("fav", mListHolidays.get(getAdapterPosition()).getFavourite());
+                            SQLiteDatabase db = holidaysDatabase.getWritableDatabase();
+                            db.update("holidays_table", contentValues, "local_name=?",
+                                    new String[]{mListHolidays.get(getAdapterPosition()).getLocalName()});
+                            }
                     }
                 });
             }
@@ -136,7 +139,6 @@ public class TodayHolidaysActivity extends AppCompatActivity {
 
             @Override
             public void onClick (View view){
-
             }
         }
     }

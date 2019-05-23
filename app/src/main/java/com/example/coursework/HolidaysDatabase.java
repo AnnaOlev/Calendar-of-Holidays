@@ -78,13 +78,20 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
         return array_list;
     }
 
-
     boolean getDataByCountry(String country) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor row;
         String query = "SELECT * FROM holidays_table" + " WHERE country"+" like '%"+country+"%'";
         row = db.rawQuery(query, null);
         return row.getCount() > 0;
+    }
+
+    void deleteEntryName(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String where="local_name=?";
+        int numberOFEntriesDeleted = db.delete(TABLE_NAME, where, new String[]{name});
+
+        Log.e(TAG, "DELETE DELETE DELETE " + numberOFEntriesDeleted);
     }
 
     void deleteEntry(String country) {
@@ -94,16 +101,4 @@ public class HolidaysDatabase extends SQLiteOpenHelper {
 
         Log.e(TAG, "DELETE DELETE DELETE " + numberOFEntriesDeleted);
     }
-
-    int getData() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor row;
-        String count = "SELECT count(*) FROM holidays_table";
-        row = db.rawQuery(count, null);
-        row.moveToFirst();
-        int counter = row.getInt(0);
-        row.close();
-        return counter;
-    }
-    // по идее этот класс нужен для проверки того, есть ли элементы с текущей датой в бд, но я хз то ли это что надо
 }

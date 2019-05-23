@@ -53,7 +53,7 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="@string/Date"
-        android:inputType="date|text"
+        android:inputType="date|datetime"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textColorHint="@color/colorPrimaryDark"

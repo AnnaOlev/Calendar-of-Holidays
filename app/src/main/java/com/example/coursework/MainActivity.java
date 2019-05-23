@@ -4,11 +4,12 @@ package com.example.coursework;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 
+import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RemoteViews;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
@@ -18,13 +19,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class MainActivity extends AppCompatActivity implements ChosenDayDialog.OnCompleteListener{
+public class MainActivity extends AppCompatActivity{
 
     private final static int REQUEST_CODE = 2;
     List<EventDay> events = new ArrayList<>();
     List<Holiday> holidays = new ArrayList<>();
     HolidaysDatabase holidaysDatabase = new HolidaysDatabase(this);
-    //CountriesDatabase countriesDatabase = new CountriesDatabase(this);
     Calendar calendar;
     CalendarView mCalendarView;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
         mCalendarView = findViewById(R.id.calendarView);
 
         getFavs();
-        if (!events.isEmpty())
-            mCalendarView.setEvents(events);
 
         mCalendarView.setOnDayClickListener(eventDay -> {
 
@@ -46,19 +44,9 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
             Date date = calendar.getTime();
             String dateString = format.format(date);
             // дата так подробно для наглядности, возможно потом уберу
-            ChosenDayDialog chosenDayDialog = new ChosenDayDialog();
-            chosenDayDialog.show(getSupportFragmentManager(), "dialog");
-            Bundle bundle = new Bundle();
-            bundle.putString("CURRENT_DAY_DATA", dateString);
-            StringBuilder todayInfoString = new StringBuilder();
-            for (int i = 0; i < events.size(); i++){
-                if (events.get(i).getCalendar() == calendar) {
-                    CustomEventDay customEventDay = (CustomEventDay) events.get(i);
-                    todayInfoString.append(customEventDay.getEventInfo()).append(" ");
-                }
-            }
-            bundle.putString("EVENT_INFO", todayInfoString.toString());
-            chosenDayDialog.setArguments(bundle);
+            Intent intent = new Intent(getBaseContext(), TodayHolidaysActivity.class);
+            intent.putExtra("clickedDate", dateString);
+            startActivityForResult(intent, REQUEST_CODE);
         });
 
         Button button = findViewById(R.id.toSettings);
@@ -67,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
             startActivity(intent);
         });
 
-        ImageButton mAddButton = findViewById(R.id.addEventButton);
+        FloatingActionButton mAddButton = findViewById(R.id.addEventButton);
         mAddButton.setOnClickListener(view -> {
             Intent intent = new Intent(getBaseContext(), AddHolidayActivity.class);
             startActivity(intent);
@@ -92,17 +80,13 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
         }
     }
 
-    public void onComplete (Intent intent){
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
     @Override
     public void onRestart(){
         super.onRestart();
         getFavs();
-        RemoteViews remoteViews = new RemoteViews(this.getPackageName(), R.layout.activity_main);
-        AppWidgetManager manager = AppWidgetManager.getInstance(this);
-        manager.updateAppWidget(R.id.calendarView, remoteViews);
+        Intent refresh = new Intent(this, MainActivity.class);
+        startActivity(refresh);
+        this.finish();
     }
 
     void getFavs(){
@@ -117,11 +101,12 @@ public class MainActivity extends AppCompatActivity implements ChosenDayDialog.O
                     calendar.setTime(date);
                     CustomEventDay customEventDay = new CustomEventDay(calendar, R.drawable.ic_action_name, holiday.getLocalName());
                     events.add(customEventDay);
-                    mCalendarView.setEvents(events);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
         }
+        if (!events.isEmpty())
+            mCalendarView.setEvents(events);
     }
 }
