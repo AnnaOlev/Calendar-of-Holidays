@@ -83,10 +83,12 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onRestart(){
         super.onRestart();
+        events.clear();
+        mCalendarView.setEvents(events);
         getFavs();
-        Intent refresh = new Intent(this, MainActivity.class);
+        /*Intent refresh = new Intent(this, MainActivity.class);
         startActivity(refresh);
-        this.finish();
+        this.finish();*/
     }
 
     void getFavs(){
